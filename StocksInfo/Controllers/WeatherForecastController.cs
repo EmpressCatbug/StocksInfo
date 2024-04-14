@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace StocksInfo.Controllers
 {
@@ -23,9 +26,9 @@ namespace StocksInfo.Controllers
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                Date = System.DateTime.Now.AddDays(index),
+                TemperatureC = System.Random.Shared.Next(-20, 55),
+                Summary = Summaries[System.Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
         }

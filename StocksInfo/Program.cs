@@ -1,20 +1,40 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.DependencyInjection;
+using DotNetEnv;
+
+DotNetEnv.Env.Load();
+
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddAuthentication();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+builder.Services.AddCors(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.AddPolicy(
+        "MyCorsPolicy",
+        builder =>
+        {
+            builder
+                .WithOrigins("https://www.stocksinfo.net")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        }
+        );
+    });
+
+builder.Services.Configure<KestrelServerOptions>(options =>    
+{        
+    options.Limits.RequestHeadersTimeout = System.TimeSpan.FromMinutes(1);
+    options.Limits.KeepAliveTimeout = System.TimeSpan.FromMinutes(3);
+});
+
+WebApplication app = builder.Build();
+
+app.UseCors("MyCorsPolicy"); // Use the CORS policy you defined earlier
 
 app.UseHttpsRedirection();
 
@@ -22,4 +42,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.Run();   
