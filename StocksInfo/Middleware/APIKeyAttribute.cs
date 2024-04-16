@@ -41,7 +41,7 @@ namespace APIMiddleware.Filters
         internal string GetKey()
         {
             DotNetEnv.Env.Load();
-            string encodedKey = System.Environment.GetEnvironmentVariable("APIKEY");
+            string encodedKey = System.Environment.GetEnvironmentVariable("API_KEY");
             return encodedKey;
         }
     }
