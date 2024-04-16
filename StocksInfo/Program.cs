@@ -1,15 +1,20 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
-using DotNetEnv;
+using StocksInfo.Services;
+using System.Net.Http;
 
 DotNetEnv.Env.Load();
+string apikey =  System.Environment.GetEnvironmentVariable("ALPHA_VANTAGE_KEY");
+string avBaseUrl = System.Environment.GetEnvironmentVariable("ALPHA_VANTAGE_BASE_URL");
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAuthentication();
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<StockDataService>(provider => new StockDataService(provider.GetRequiredService<HttpClient>(), apikey, avBaseUrl));
 
 builder.Services.AddCors(options =>
 {
