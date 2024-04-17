@@ -23,7 +23,7 @@ namespace StocksInfo.Controllers
         [HttpGet("AnalyzeStocks")]
         public async Task<IActionResult> AnalyzeStocks([FromQuery] List<string> tickers, [FromQuery] string period = "1y")
         {
-            List<StockData> result = await _stockDataService.FetchAndAnalyzeStockAsync(tickers, period);
+            List<dynamic> result = await _stockDataService.FetchAndAnalyzeStockAsync(tickers, period);
             return Ok(result);
         }
 
