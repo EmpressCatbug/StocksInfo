@@ -20,4 +20,4 @@ RUN dotnet publish "StocksInfo.csproj" -c Release -o /app/publish /p:UseAppHost=
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "StocksInfo.dll"]
+ENTRYPOINT ["dotnet", "StocksInfo.dll", "--urls", "http://+:3000"]
