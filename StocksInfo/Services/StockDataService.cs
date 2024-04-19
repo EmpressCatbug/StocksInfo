@@ -19,9 +19,9 @@ namespace StocksInfo.Services
             _avBaseUrl = avBaseUrl;
         }
 
-        public async Task<List<StockData>> FetchAndAnalyzeStockAsync(List<string> tickers, string period = "1y")
+        public async Task<List<dynamic>> FetchAndAnalyzeStockAsync(List<string> tickers, string period = "1y")
         {
-            List<StockData> results = new List<StockData>();
+            List<dynamic> results = new List<dynamic>();
 
             foreach (string ticker in tickers)
             {
@@ -35,14 +35,14 @@ namespace StocksInfo.Services
             return results;
         }
 
-        private async Task<StockData> FetchStockDataAsync(string ticker, string period)
+        private async Task<dynamic> FetchStockDataAsync(string ticker, string period)
         {
-            string url = $"{_avBaseUrl}/query?functions=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey={_apiKey}";
+            string url = $"{_avBaseUrl}/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey={_apiKey}";
             HttpResponseMessage response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<StockData>(content);
+                return JsonConvert.DeserializeObject<dynamic>(content);
             }
             return null; // Or handle errors appropriately
         }
@@ -50,18 +50,18 @@ namespace StocksInfo.Services
         public async Task<dynamic> EarningsCalendar(int months)
         {
             string url;
-            url = $"{_avBaseUrl}/query?functions=EARNINGS_CALENDAR&horizon=12month&apikey={_apiKey}";
+            url = $"{_avBaseUrl}/query?function=EARNINGS_CALENDAR&horizon=12month&apikey={_apiKey}";
 
             if (months != 12)
             {
-                url = $"{_avBaseUrl}/query?functions=EARNINGS_CALENDAR&horizon=3month&apikey={_apiKey}";
+                url = $"{_avBaseUrl}/query?function=EARNINGS_CALENDAR&horizon=3month&apikey={_apiKey}";
             }
 
             HttpResponseMessage response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content);
+                return content;
             }
             return null; // Or handle errors appropriately
         }
